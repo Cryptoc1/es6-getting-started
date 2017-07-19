@@ -1,13 +1,25 @@
+// import existing modules that we'll use
+
+// events is a built-in node module. When webpack compiles this source, it will inject (pack) the EventEmitter module, so that we don't have to.
 import EventEmitter from 'events'
+// We use `{}` because in `./errors/index.js` we defined TimeError as a named export
 import { TimerError } from './errors'
 
-export default class Timer extends EventEmitter {
+/**
+ * A timer ticks
+ *
+ * @class Timer
+ * @extends {EventEmitter}
+ */
+class Timer extends EventEmitter {
   constructor (options = {}) {
     super()
 
     if (typeof options === 'number') options = { delay: options }
 
+    // Object.assign() is an ES6 feature. We don't have to worry about browser support because `babel-polyfill` (in index.js) will define this method if the browser didn't
     this.options = Object.assign({
+      autoStart: false,
       delay: 1000
     }, options)
 
@@ -59,7 +71,25 @@ export default class Timer extends EventEmitter {
     this.emit('stopped', this.stopped = true)
   }
 
+  // We use the `get` keyword to define a readonly property. This prevents users of the Timer module from editing the value of `.tick`
   get tick () {
     return this._tick
   }
 }
+
+/*
+ Export the Timer class
+ We use the `default` keyword so that we don't need to use a named import
+
+ If this were a named export it would look like:
+  export { Timer }
+ Importing this module would then look like:
+  import { Timer } from './timer'
+
+ By NOT using a named export, users of this module can import Timer however they want.
+ e.g.:
+  import T from './timer
+ In this example, `T` is equivalent to the `Timer` class
+
+*/
+export default Timer

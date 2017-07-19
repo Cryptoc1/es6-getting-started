@@ -8,6 +8,10 @@
 
 <body>
   <div id="root">Tick: 0</div>
+  <!--
+    We use the async attribute so that the browser will request the script in a seperate thread.
+    The defer attribute informs the browser to execute the JavaScript once the DOM is finshed parsing, regardless of when the request for the JS file completes
+  -->
   <script src="dist/bundle.min.js" async defer></script>
 </body>
 

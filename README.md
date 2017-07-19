@@ -43,3 +43,47 @@ Before defining our configuration, we need to install the dependencies required 
   `$ npm install --save-dev webpack babel-cli babel-loader babel-preset-es2015 babel-preset-stage-0 babel-polyfill`
 
   _Hint_: You can use `-D` instead `--save-dev`
+
+  ```javascript
+    // https://webpack.js.org/concepts/configuration/
+    const config = {
+      // Generate *.map files for the compiled JavaScript, this makes debugging easier
+      devtool: 'source-map',
+      // Our app starts at index.js
+      entry: `${APP_DIR}/index.js`,
+      module: {
+        // Define loaders to handle the manipulation of the code
+        loaders: [
+          {
+            // Tell babel to ignore files imported from node modules
+            exclude: /node_modules/,
+            // Tell babel to load files from our app directory
+            include: APP_DIR,
+            loader: 'babel-loader',
+            options: {
+              // presets tell babel what to do to our code
+              // the `es2015` preset tells babel that we want to transform our ES6 -> ES5 (https://babeljs.io/docs/plugins/preset-es2015/)
+              // the `stage-0` preset tells babel to insert _runtime_ code (polyfills) that change how built-in functions work to meet the ES6 spec (https://babeljs.io/docs/plugins/preset-stage-0/)
+              presets: ['es2015', 'stage-0']
+            },
+            // Tell babel that it should transform ("load") any files that have a `.js` extension
+            test: /\.js?/
+          }
+        ]
+      },
+      output: {
+        // Save the compiled javascript to `bundle.min.js`
+        filename: 'bundle.min.js',
+        path: BUILD_DIR
+      },
+      plugins: [
+        // Minify + mangle the compiled code
+        // enabling this plugin we prevent webpack from generating your source-maps, so it's disabled for development
+        // new webpack.optimize.UglifyJsPlugin()
+      ],
+      // Tell webpack that we are writing code for a browser
+      target: 'web'
+    }
+  ```
+
+
